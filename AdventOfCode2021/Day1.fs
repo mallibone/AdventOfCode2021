@@ -15,11 +15,11 @@ let day1Part2 (input:string[]) =
     |> Array.fold (fun count window -> (if window[0] < window[1] then (count+1) else count)) 0
 
 
-let executeDay1 testInput input= 
-    day1Part1 testInput |> printfn "Day1 Part1: Test Increases: %d"
-    day1Part1 input |> printfn "Day1 Part1: Test Increases: %d"
+let executeDay testInput input= 
+    day1Part1 testInput |> printfn "Day1 Part1 Test Increases: %d"
+    day1Part1 input |> printfn "Day1 Part1 Increases: %d"
 
-    day1Part2 testInput |> printfn "Day1 Part 2: Test Increases: %d"
-    day1Part2 input |> printfn "Day1 Part2: Test Increases: %d"
+    day1Part2 testInput |> printfn "Day1 Part 2 Test Increases: %d"
+    day1Part2 input |> printfn "Day1 Part2 Increases: %d"
 
     ()

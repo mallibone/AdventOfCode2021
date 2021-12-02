@@ -12,6 +12,9 @@ let getInput day =
 // printfn "Hello from F#"
 printfn "Advent of Code 2021"
 
-let testInput = getTestInput 1
-let input = getInput 1
-Day1.executeDay1 testInput input
+let printDay (day, dayFunc) =
+    printfn $"** Day {day} **"
+    dayFunc (getTestInput day) (getInput day)
+
+[(1,Day1.executeDay); (2,Day2.executeDay)]
+|> List.iter printDay
