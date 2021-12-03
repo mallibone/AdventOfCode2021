@@ -1,17 +1,17 @@
 module Day2
 
 let positionUpdatePart2 (hPos, vPos, aim) (instruction:string[]) =
-    match instruction[0] with
-    | "forward" -> (hPos + int instruction[1], vPos + aim * int instruction[1], aim)
-    | "down" -> (hPos, vPos, aim + int instruction[1])
-    | "up" -> (hPos, vPos, aim - int instruction[1])
+    match instruction with
+    | [|"forward"; posChange|] -> (hPos + int posChange, vPos + aim * int posChange, aim)
+    | [|"down"; posChange|] -> (hPos, vPos, aim + int posChange)
+    | [|"up"; posChange|] -> (hPos, vPos, aim - int posChange)
     | _ -> (hPos, vPos, aim)
 
 let positionUpdatePart1 (hPos, vPos, _) (instruction:string[]) =
-    match instruction[0] with
-    | "forward" -> (hPos + int instruction[1], vPos, 0)
-    | "down" -> (hPos, vPos + int instruction[1], 0)
-    | "up" -> (hPos, vPos - int instruction[1], 0)
+    match instruction with
+    | [|"forward"; posChange|] -> (hPos + int posChange, vPos, 0)
+    | [|"down"; posChange|] ->  (hPos, vPos + int posChange, 0)
+    | [|"up"; posChange|] -> (hPos, vPos - int posChange, 0)
     | _ -> (hPos, vPos, 0)
 
 let solveDay2 positionUpdate (input:string[]) =
