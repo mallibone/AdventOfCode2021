@@ -10,11 +10,12 @@ let getInput day =
 
 // For more information see https://aka.ms/fsharp-console-apps
 // printfn "Hello from F#"
+
 printfn "Advent of Code 2021"
 
-let printDay (day, dayFunc) =
+let printDay day dayFunc =
     printfn $"** Day {day} **"
     dayFunc (getTestInput day) (getInput day)
 
-[(1,Day1.executeDay); (2,Day2.executeDay)]
-|> List.iter printDay
+[(Day1.executeDay); (Day2.executeDay); (Day3.executeDay)]
+|> List.iteri (fun i func -> printDay (i+1) func)
