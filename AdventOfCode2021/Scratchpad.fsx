@@ -26,49 +26,60 @@ let rec parseBingofields (input:seq<string>) (bingoFields:seq<seq<seq<string*int
         printfn "input left: %A" input
         parseBingofields (input |> Seq.skip (getSkip input)) bingoFields
 
-let isBingo fields =
-    fields
-    |> Seq.filter (fun bingoBoardFields -> bingoBoardFields |> Seq.exists (Seq.forall (fun x -> (snd x) = 1)))
+let isBingo bingoBoardFields =
+    bingoBoardFields |> Seq.exists (Seq.forall (fun x -> (snd x) = 1))
 
 let sumUnmarkedBingoFields fields =
     fields |> Seq.sumBy (fun bingoFields -> bingoFields |> Seq.collect(fun bingoRowFields -> bingoRowFields |> Seq.filter(fun field -> (snd field) = 0)) |> Seq.sumBy(fun field -> int (fst field)))
 
-let rec playBingo (numbers:list<string>) bingoFields =
-    let play head tail =
-        // increment numbers that match
-        let newBingoFields =
-            bingoFields
-            |> Seq.map (fun field -> field |> Seq.map (fun lineItems -> lineItems |> Seq.map(fun e -> if fst e = head then (fst e, (snd e) + 1) else (fst e, snd e))))
+let playBingoRound roundNumber bingoFields =
+    bingoFields
+    |> Seq.map (fun field -> field |> Seq.map (fun lineItems -> lineItems |> Seq.map(fun e -> if fst e = roundNumber then (fst e, (snd e) + 1) else (fst e, snd e))))
 
+let rec playBingoPart1 (numbers:list<string>) bingoFields =
+    match numbers with
+    | [] -> -1
+    | head::tail -> 
+        let newBingoFields = playBingoRound head bingoFields
         // check for bingo
-        let havingBingoRow = newBingoFields |> isBingo 
-        let havingBingoColumn = newBingoFields |> Seq.map pivot |> isBingo
+        let havingBingoRow = (newBingoFields |> Seq.filter isBingo) |> Seq.append (newBingoFields |> Seq.map pivot |> Seq.filter isBingo)
         // check for bingo
-        match (havingBingoRow |> Seq.length) > 0, (havingBingoColumn |> Seq.length) > 0 with
-        | true, _ ->
+        if (havingBingoRow |> Seq.length) > 0 then
             let notCalledSum:int = sumUnmarkedBingoFields havingBingoRow
             printfn $"row bingo sum %d{notCalledSum} last number %d{int head} "
             notCalledSum * (int head)
-        | _, true ->
-            let notCalledSum:int = sumUnmarkedBingoFields havingBingoColumn
-            printfn $"column bingo sum %d{notCalledSum} last number %d{int head} "
-            notCalledSum * (int head)
-        | false, false -> playBingo tail newBingoFields
+        else playBingoPart1 tail newBingoFields
 
+let rec playBingoPart2 (numbers:list<string>) bingoFields =
     match numbers with
     | [] -> -1
-    | [lastNumber] -> play lastNumber []
-    | head::tail -> play head tail
-
+    | head::tail -> 
+        let newBingoFields = 
+            playBingoRound head bingoFields
+            |> Seq.filter (fun x -> not (isBingo x))
+            |> Seq.filter (fun x -> x |> pivot |> isBingo |> not )
+        // check for bingo
+        // let havingBingoRow = (newBingoFields |> isBingo) |> Seq.append (newBingoFields |> Seq.map pivot |> isBingo)
+        // check for bingo
+        if newBingoFields |> Seq.length = 1 then
+            // printfn "last number %A" head
+            // printfn "remaining fields %A" (newBingoFields |> Seq.map (Seq.map Seq.toList) |> Seq.map Seq.toList |> Seq.toList)
+            playBingoPart1 tail newBingoFields
+        else
+            // printfn "last number %A" head
+            // printfn "remaining fields %A" (newBingoFields |> Seq.map (Seq.map Seq.toList) |> Seq.map Seq.toList |> Seq.toList)
+            playBingoPart2 tail newBingoFields
 
 let testInput = getTestInput 4
 let testNumbers = testInput |> Seq.head |> fun s -> s.Split(",") |> Seq.toList
 let testBingoFields = parseBingofields (testInput |> Array.skip 2) [||]
 
-playBingo testNumbers testBingoFields |> printfn "Bingo Baby: %d"
+playBingoPart1 testNumbers testBingoFields |> printfn "Bingo Baby: %d"
+playBingoPart2 testNumbers testBingoFields |> printfn "Bingo Baby: %d"
 
 let input = getInput 4
 let numbers = input |> Seq.head |> fun s -> s.Split(",") |> Seq.toList
 let bingoFields = parseBingofields (input |> Array.skip 2) [||]
 
-playBingo numbers bingoFields |> printfn "Bingo Baby: %d"
+playBingoPart1 numbers bingoFields |> printfn "Bingo Baby: %d"
+playBingoPart2 numbers bingoFields |> printfn "Bingo Baby: %d"
