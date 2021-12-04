@@ -4,9 +4,9 @@ open System
 
 let pivot input =
     input
-    |> Seq.collect(fun s -> s |> Seq.mapi(fun i e -> (i, e))) //wrap with index
-    |> Seq.groupBy(fst) //group by index
-    |> Seq.map(fun (i, s) -> s |> Seq.map snd) 
+    |> Seq.collect Seq.indexed
+    |> Seq.groupBy fst //group by index
+    |> Seq.map(snd >> Seq.map snd)//(fun (_, s) -> s |> Seq.map snd) 
 
 let solveDay3Part1 input =
     input
