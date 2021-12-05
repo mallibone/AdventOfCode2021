@@ -67,4 +67,4 @@ let executeDay testInput input =
     playBingoPart1 numbers bingoFields |> printfn "Part1 Bingo Baby: %d"
 
     playBingoPart2 testNumbers testBingoFields |> printfn "Part2 Test Bingo Baby: %d"
-    playBingoPart2 numbers bingoFields |> printfn "Part2 Bingo Baby: %d"
+    // playBingoPart2 numbers bingoFields |> printfn "Part2 Bingo Baby: %d"
