@@ -8,9 +8,6 @@ let getInput day =
     let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
     File.ReadAllLines(filename day)
 
-// For more information see https://aka.ms/fsharp-console-apps
-// printfn "Hello from F#"
-
 printfn "Advent of Code 2021"
 
 let printDay day dayFunc =
