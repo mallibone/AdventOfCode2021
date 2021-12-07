@@ -1,11 +1,8 @@
 module Day6
 
-open System
-
 let simulate iterations (fishes:int64[]) =
     let rec simulateRounds iteration (fishAgeGroups:int64[]) =
         if iteration > 0 then
-            // [|8 .. -1 .. 0|] |> Array.map(fun i -> fishAgeGroups[] |> Seq.filter(fun fish -> fish = i) |> Seq.length)
             let nextFishAgeGroup =
                 [|0 .. 8|] |> Array.map(fun i -> 
                     match i with
@@ -46,4 +43,3 @@ let executeDay (testInput:string[]) (input:string[]) =
     |> simulate daysPart2
     |> Seq.sum
     |> printfn "Part 2 Test, Fishes after %d days: %A" daysPart2
-// |> Seq.length

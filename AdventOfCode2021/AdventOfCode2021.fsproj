@@ -20,4 +20,7 @@
     </Content>
     <None Include="Scratchpad.fsx" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Collections.ParallelSeq" Version="1.2.0" />
+  </ItemGroup>
 </Project>

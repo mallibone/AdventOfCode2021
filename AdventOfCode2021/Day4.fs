@@ -1,6 +1,7 @@
 module Day4
 
 open System
+open FSharp.Collections.ParallelSeq
 
 let pivot input =
     input
@@ -43,7 +44,7 @@ let rec playBingoPart1 (numbers:list<string>) (bingoFields:(string * int)[,]seq)
     | head::tail -> 
         let newBingoFields = playBingoRound head bingoFields
         // check for bingo
-        let havingBingoRow = (newBingoFields |> Seq.filter isBingo) //|> Seq.append (newBingoFields |> Seq.map pivot |> Seq.filter isBingo)
+        let havingBingoRow = (newBingoFields |> PSeq.filter isBingo |> PSeq.toList) //|> Seq.append (newBingoFields |> Seq.map pivot |> Seq.filter isBingo)
         // check for bingo
         if (havingBingoRow |> Seq.length) > 0 then
             let notCalledSum:int = sumUnmarkedBingoFields havingBingoRow
@@ -51,13 +52,14 @@ let rec playBingoPart1 (numbers:list<string>) (bingoFields:(string * int)[,]seq)
             notCalledSum * (int head)
         else playBingoPart1 tail newBingoFields
 
-let rec playBingoPart2 (numbers:list<string>) bingoFields =
+let rec playBingoPart2 (numbers:list<string>) (bingoFields:(string * int)[,]seq) =
     match numbers with
     | [] -> -1
     | head::tail -> 
         let newBingoFields = 
             playBingoRound head bingoFields
-            |> Seq.filter (fun x -> not (isBingo x))
+            |> PSeq.filter (fun x -> not (isBingo x))
+            |> PSeq.toList
             // |> Seq.filter (fun x -> x |> pivot |> isBingo |> not )
         if newBingoFields |> Seq.length = 1 then
             playBingoPart1 tail newBingoFields

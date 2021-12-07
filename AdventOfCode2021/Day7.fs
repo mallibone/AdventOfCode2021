@@ -1,6 +1,7 @@
 module Day7
 
 open System
+open FSharp.Collections.ParallelSeq
 
 let playPart1 crabs (startingPosition:int) =
     printfn "Starting pos: %d" startingPosition
@@ -10,8 +11,7 @@ let playPart2 crabs (meanStartingPosition:int) (avgStartingPosition:int) =
     let rec play crabs (pos:int) =
         crabs |> Array.map (fun c -> [1 .. Math.Abs(c - pos)] |> Seq.sum) |> Array.sum
     
-    [meanStartingPosition .. avgStartingPosition] |> Seq.map (play crabs) |> Seq.min
-    
+    [meanStartingPosition .. avgStartingPosition] |> PSeq.map (play crabs) |> Seq.min
 
 let executeDay (testInput:string[]) (input:string[]) =
     // part 1
