@@ -1,14 +1,4 @@
-#time
-open System.IO
-open System
-
-let getTestInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/TestDay{day}.txt")
-    File.ReadAllLines(filename day)
-
-let getInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
-    File.ReadAllLines(filename day)
+module Day9
 
 let flat2Darray array2D = 
     seq { for x in [0..(Array2D.length1 array2D) - 1] do 
@@ -62,20 +52,6 @@ let rec findPool (floorSections:int[,]) (pool:(int*int*int)list) (lowPoints:(int
         let newPool = ((floorSections[x,y],x,y)::pool)
         findPool floorSections newPool (morePoolPoints@newPoolPoints)
 
-
-    // let x = fst lowPoint
-    // let y = snd lowPoint
-    // let newPoolFields = 
-    //     (getAdjacentNeighbours floorSections x y) 
-    //     |> List.filter(fun (n,x,y) -> n <> 9 && not (pool |> Seq.contains(n,x,y)))
-    // // printfn $"gna {x} {y}"
-
-    // match newPoolFields with
-    // | [] -> pool
-    // | _ -> 
-    //     let newPool = List.append pool newPoolFields
-    //     newPoolFields |> List.collect(fun (_,x,y) -> findPool floorSections newPool (x,y))
-
 let findPools (floorSections:int[,]) =
     let lowPoints = 
         floorSections
@@ -91,23 +67,39 @@ let findPools (floorSections:int[,]) =
     |> Seq.distinct
     |> Seq.map (fun p -> p |> Seq.length)
 
+let part1 input =
+    input
+    |> parseInput
+    |> filterLowPoints
+    |> flat2Darray
+    |> Seq.filter (fun (isLowPoint,_,_,_) -> isLowPoint)
+    |> Seq.map (fun (_,value,_,_) -> value)
+    |> Seq.map (fun i -> i + 1)
+    |> Seq.sum
 
-// Part 1
-// getTestInput 9
-// getInput 9
-// |> parseInput
-// |> filterLowPoints
-// |> flat2Darray
-// |> Seq.filter (fun (isLowPoint,_,_,_) -> isLowPoint)
-// |> Seq.map (fun (_,value,_,_) -> value)
-// |> Seq.map (fun i -> i + 1)
-// |> Seq.sum
+let part2 input = 
+    input
+    |> parseInput
+    |> findPools
+    |> Seq.sortDescending
+    |> Seq.take 3
+    |> Seq.fold(fun state n -> n * state) 1
 
-getInput 9
-// getTestInput 9
-|> parseInput
-|> findPools
-|> Seq.sortDescending
-|> Seq.take 3
-|> Seq.fold(fun state n -> n * state) 1
-|> printfn "%A"
+let executeDay (testInput:string[]) (input:string[]) =
+    // part 1
+    testInput
+    |> part1
+    |> printfn "Part 1 Test: %d"
+
+    input
+    |> part1
+    |> printfn "Part 1: %d"
+
+    // part 2
+    testInput
+    |> part2
+    |> printfn "Part 2 Test: %d"
+
+    input
+    |> part2
+    |> printfn "Part 2: %d"

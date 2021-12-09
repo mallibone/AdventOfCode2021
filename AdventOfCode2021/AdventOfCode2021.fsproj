@@ -11,6 +11,8 @@
     <Compile Include="Day5.fs" />
     <Compile Include="Day6.fs" />
     <Compile Include="Day7.fs" />
+    <Compile Include="Day8.fs" />
+    <Compile Include="Day9.fs" />
     <Compile Include="Program.fs" />
     <Content Include="Input\Day1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
