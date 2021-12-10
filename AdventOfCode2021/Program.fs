@@ -20,5 +20,6 @@ let printDay day dayFunc =
     printfn $"Duration {sw.ElapsedMilliseconds} ms"
     printfn $"***************"
 
-[(Day1.executeDay); (Day2.executeDay); (Day3.executeDay); (Day4.executeDay); (Day5.executeDay); (Day6.executeDay); (Day7.executeDay); (Day8.executeDay); (Day9.executeDay)]
+[(Day1.executeDay); (Day2.executeDay); (Day3.executeDay); (Day4.executeDay); (Day5.executeDay); (Day6.executeDay); 
+    (Day7.executeDay); (Day8.executeDay); (Day9.executeDay); (Day10.executeDay)]
 |> List.iteri (fun i func -> printDay (i+1) func)
