@@ -1,14 +1,4 @@
-#time
-open System.IO
-open System
-
-let getTestInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/TestDay{day}.txt")
-    File.ReadAllLines(filename day)
-
-let getInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
-    File.ReadAllLines(filename day)
+module Day11
 
 let to2DArray (inputLines:string[]) =
     inputLines |> Array.mapi (fun y l -> l.ToCharArray() |> Array.mapi (fun x id -> (id.ToString() |> int))) |> array2D
@@ -60,10 +50,7 @@ let rec energiseNeighbours (map:int[,]) glowingCoords newGlowingCoords =
             (findGlowingCoords map)
             |> List.filter (fun c -> not (knownGlowers |> Seq.contains c))
         
-        // let knownGlowers = (List.append glowingCoords newGlowers)
-        // printfn "%A" newGlowers
         // repeat
-        //(glowingCoords map
         energiseNeighbours map knownGlowers newGlowers
 
 let flat2Darray array2D = 
@@ -73,11 +60,6 @@ let flat2Darray array2D =
 
 // let rec part1 remainingRounds (map:Map<(int * int), int>) =
 let playRound (map:int[,]) =
-    // let nextMap =
-    //     incrementEnergy map (map |> Map.toSeq |> Seq.map fst)
-        // |> Map.map (fun _ value -> (value + 1))
-    
-    // per round
     // increment all by 1
     let newMap = map |> Array2D.map ((+) 1)
 
@@ -114,12 +96,21 @@ let part2 (input:string[]) =
     |> to2DArray
     |> findSuperFlash 0
 
-// getTestInput 11
-// |> part1
-// getInput 11
-// |> part1
+let executeDay (testInput:string[]) (input:string[]) =
+    // part 1
+    testInput
+    |> part1
+    |> printfn "Part 1 Test: %d"
 
-getTestInput 11
-|> part2
-getInput 11
-|> part2
+    input
+    |> part1
+    |> printfn "Part 1: %d"
+
+    // part 2
+    testInput
+    |> part2
+    |> printfn "Part 2 Test: %d"
+
+    input
+    |> part2
+    |> printfn "Part 2: %d"
