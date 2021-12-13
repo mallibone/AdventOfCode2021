@@ -21,5 +21,6 @@ let printDay day dayFunc =
     printfn $"***************"
 
 [(Day1.executeDay); (Day2.executeDay); (Day3.executeDay); (Day4.executeDay); (Day5.executeDay); (Day6.executeDay); 
-    (Day7.executeDay); (Day8.executeDay); (Day9.executeDay); (Day10.executeDay); (Day11.executeDay); (Day12.executeDay)]
+    (Day7.executeDay); (Day8.executeDay); (Day9.executeDay); (Day10.executeDay); (Day11.executeDay); (Day12.executeDay);
+    (Day13.executeDay)]
 |> List.iteri (fun i func -> printDay (i+1) func)
