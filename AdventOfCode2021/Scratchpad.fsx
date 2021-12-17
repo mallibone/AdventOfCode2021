@@ -10,9 +10,9 @@ let getInput day =
     let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
     File.ReadAllLines(filename day)
 
-type ValuePaket = {version:int;paketType:int;value:int}
+type ValuePaket = {version:int64;paketType:int64;value:int64}
 type OperatorPaket = 
-    {version:int;paketType:int;subPaket:list<Package>}
+    {version:int64;paketType:int64;subPaket:list<Package>}
 and Package =
     | ValuePaket of ValuePaket
     | OperatorPaket of OperatorPaket
@@ -39,7 +39,7 @@ let bitArrayToNumber (bitArray:seq<char>) =
     bitArray
     |> Seq.rev
     |> Seq.mapi (fun i c -> (i,c))
-    |> Seq.fold (fun n (i,c) -> n + (if c = '1' then (2.0**(float i) |> int) else 0)) 0
+    |> Seq.fold (fun n (i,c) -> n + (if c = '1' then (2.0**(float i) |> int64) else 0)) 0L
 
 let toBitArray (hexInput:string) =
     hexInput.ToCharArray()
@@ -75,7 +75,7 @@ let rec parsePakets (inputStream:seq<char>) : Package*seq<char> =
     // printfn $"version {version}"
     // printfn $"paketType {paketType}"
     match paketType with
-    | 4 -> 
+    | 4L -> 
         let valuePaket, remainingStream = parseValuePaket remainingStream 
         (ValuePaket({version = version; paketType = paketType; value = valuePaket |> bitArrayToNumber}), remainingStream)
     | _ -> 
@@ -86,7 +86,7 @@ and parseOperatorPaket (inputStream:list<char>) =
     // printfn "input stream %A" inputStream
     let lenghtTypeId = if inputStream[0] = '0' then 15 else 11
     // printfn $"Size Type: {lenghtTypeId}"
-    let paketSize = inputStream |> Seq.skip 1 |> Seq.take lenghtTypeId |> bitArrayToNumber
+    let paketSize = inputStream |> Seq.skip 1 |> Seq.take lenghtTypeId |> bitArrayToNumber |> int
     // printfn $"Paket size: {paketSize}"
 
     let inputStream = inputStream |> Seq.skip (1 + lenghtTypeId) |> Seq.toList
@@ -98,7 +98,7 @@ and parseOperatorPaket (inputStream:list<char>) =
         let rec parseInnerPakets innerPakets (stream:seq<char>) =
             // printfn $"stream length: {stream |> Seq.length} original stream length: {inputStream |> Seq.length} paket size {paketSize}"
             if (innerPaketStream |> Seq.length) - (stream |> Seq.length) = paketSize then
-                innerPakets, stream |> Seq.append inputStream
+                innerPakets |> List.rev, stream |> Seq.append inputStream
             else
                 let paket, remainingStream = parsePakets stream
                 parseInnerPakets (paket::innerPakets) remainingStream
@@ -126,6 +126,34 @@ let rec sumVersions paket =
     | ValuePaket vp -> vp.version
     | OperatorPaket op -> op.version + (op.subPaket |> Seq.sumBy (fun p -> sumVersions p))
 
+let rec calculatePackages paket =
+    match paket with
+    | ValuePaket vp -> vp.value
+    | OperatorPaket op -> 
+        match int op.paketType with
+        | 0 -> op.subPaket |> Seq.sumBy calculatePackages
+        | 1 -> op.subPaket |> Seq.fold (fun v p -> v * (calculatePackages p)) 1
+        | 2 -> op.subPaket |> Seq.map calculatePackages |> Seq.min
+        | 3 -> op.subPaket |> Seq.map calculatePackages |> Seq.max
+        | 5 -> 
+            if calculatePackages op.subPaket[0] > calculatePackages op.subPaket[1] then
+                1
+            else
+                0
+        | 6 -> 
+            if calculatePackages op.subPaket[0] < calculatePackages op.subPaket[1] then
+                1
+            else
+                0
+        | 7 -> 
+            if calculatePackages op.subPaket[0] = calculatePackages op.subPaket[1] then
+                1
+            else
+                0
+        | _ -> raise (new NotImplementedException($"Unkown type {op.paketType}"))
+
+        // op.version + (op.subPaket |> Seq.sumBy (fun p -> sumVersions p))
+
 let part1 (inputStream:string[]) =
     inputStream
     |> Seq.map toBitArray
@@ -133,9 +161,17 @@ let part1 (inputStream:string[]) =
     |> Seq.map fst
     |> Seq.map sumVersions
 
+let part2 (inputStream:string[]) =
+    inputStream
+    |> Seq.map toBitArray
+    |> Seq.map parsePakets
+    |> Seq.map fst
+    |> Seq.map calculatePackages
+    |> Seq.toList
+
 getTestInput 16
 getInput 16
-|> part1
+|> part2
 // |> Array.map toBitArray
 // |> Array.map parsePakets
 // |> Array.map sumVersions
