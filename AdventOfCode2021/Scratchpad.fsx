@@ -9,8 +9,3 @@ let getTestInput day =
 let getInput day =
     let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
     File.ReadAllLines(filename day)
-
-
-getInput 17
-// getTestInput 17
-|> part2
