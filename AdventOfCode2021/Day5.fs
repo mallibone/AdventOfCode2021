@@ -51,7 +51,6 @@ let drawMap (lines:int[,][]) =
 let executeDay testInput input =
     testInput
     |> parseInput (fun i -> isHorizontalLine i || isVerticalLine i)
-    // |> parseInput (fun i -> isHorizontalLine i || isVerticalLine i || isDiagonalLine i)
     |> drawMap
     |> Seq.cast<int> 
     |> Seq.sumBy (fun p -> if p > 1 then 1 else 0)
@@ -59,7 +58,6 @@ let executeDay testInput input =
 
     input
     |> parseInput (fun i -> isHorizontalLine i || isVerticalLine i)
-    // |> parseInput (fun i -> isHorizontalLine i || isVerticalLine i || isDiagonalLine i)
     |> drawMap
     |> Seq.cast<int> 
     |> Seq.sumBy (fun p -> if p > 1 then 1 else 0)

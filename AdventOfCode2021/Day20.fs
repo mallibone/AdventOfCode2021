@@ -1,14 +1,4 @@
-#time
-open System.IO
-open System
-
-let getTestInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/TestDay{day}.txt")
-    File.ReadAllLines(filename day)
-
-let getInput day =
-    let filename day = Path.Combine(__SOURCE_DIRECTORY__, $"Input/Day{day}.txt")
-    File.ReadAllLines(filename day)
+module Day20
 
 type FieldState = L | D | U
 
@@ -100,6 +90,21 @@ let part2 (input:string[]) =
     |> Seq.fold (fun state _ -> imageEnhancer 2 state) firstRunEnhancedImage
     |> countLights
 
-getTestInput 20
-getInput 20
-|> part2
+let executeDay (testInput:string[]) (input:string[]) =
+    // part 1
+    testInput
+    |> part1
+    |> printfn "Part 1 Test: %A"
+
+    input
+    |> part1
+    |> printfn "Part 1: %A"
+
+    // part 2
+    testInput
+    |> part2
+    |> printfn "Part 2 Test: %A"
+
+    input
+    |> part2
+    |> printfn "Part 2: %A"
